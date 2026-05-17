@@ -1,0 +1,13 @@
+{
+  "name": "yolo-detection",
+  "version": "1.0.0",
+  "description": "即時物件偵測網站（COCO 80 類預訓練模型）",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve public -p 3001",
+    "start": "npx serve public -p 8081"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}

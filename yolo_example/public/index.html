@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>即時物件偵測</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e1a;
+      --surface: #131929;
+      --border: #1e2d4a;
+      --accent: #3b82f6;
+      --accent2: #06b6d4;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --success: #22c55e;
+      --warn: #f59e0b;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #status-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: var(--border);
+      color: var(--text-dim);
+      transition: all 0.3s;
+    }
+    #status-badge.ready   { background: #14532d; color: var(--success); }
+    #status-badge.loading { background: #1c1400; color: var(--warn); }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    /* ── Video area ── */
+    .video-wrap {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      aspect-ratio: 4/3;
+      max-height: 75vh;
+    }
+
+    #webcam {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    #loading-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 14, 26, 0.92);
+      gap: 1rem;
+      z-index: 10;
+    }
+
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loading-screen p { color: var(--text-dim); font-size: 0.9rem; }
+    #loading-screen strong { color: var(--text); }
+
+    /* ── Side panel ── */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .card h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .stat {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* Detection list */
+    #detect-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #detect-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.82rem;
+    }
+
+    .det-name { font-weight: 600; }
+
+    .det-bar-wrap {
+      flex: 1;
+      margin: 0 0.5rem;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .det-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.2s;
+    }
+
+    .det-score {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
+    /* Controls */
+    #btn-camera {
+      width: 100%;
+      padding: 0.65rem;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    #btn-camera:hover { opacity: 0.85; }
+    #btn-camera:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    label[for="threshold"] {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #threshold {
+      width: 100%;
+      margin-top: 0.5rem;
+      accent-color: var(--accent);
+    }
+
+    /* Model note */
+    .model-note {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 700px) {
+      main { grid-template-columns: 1fr; }
+      .panel { flex-direction: row; flex-wrap: wrap; }
+      .card { flex: 1 1 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>即時物件偵測</h1>
+  <span id="status-badge">載入中…</span>
+</header>
+
+<main>
+  <div class="video-wrap">
+    <video id="webcam" autoplay playsinline muted aria-label="攝影機畫面"></video>
+    <canvas id="overlay" aria-hidden="true"></canvas>
+
+    <div id="loading-screen">
+      <div class="spinner"></div>
+      <strong>正在載入偵測模型…</strong>
+      <p>首次載入約需 5–15 秒，之後會快很多</p>
+    </div>
+  </div>
+
+  <aside class="panel" role="complementary" aria-label="偵測資訊面板">
+
+    <div class="card">
+      <h2>即時統計</h2>
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-value" id="stat-fps">—</div>
+          <div class="stat-label">FPS</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="stat-count">0</div>
+          <div class="stat-label">偵測到物件</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>偵測結果</h2>
+      <ul id="detect-list" aria-live="polite" aria-label="偵測物件列表">
+        <li style="color: var(--text-dim); font-size: 0.82rem;">等待偵測…</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>控制</h2>
+      <button id="btn-camera" disabled aria-label="開啟攝影機">開啟攝影機</button>
+      <br><br>
+      <label for="threshold">
+        信心門檻：<span id="threshold-val">50%</span>
+      </label>
+      <input type="range" id="threshold" min="10" max="90" value="50" aria-label="信心門檻">
+    </div>
+
+    <div class="card">
+      <h2>關於模型</h2>
+      <p class="model-note">
+        使用 <strong>COCO-SSD</strong> 預訓練模型，可辨識 80 種日常物體。<br><br>
+        由 TensorFlow.js 在瀏覽器端直接推論，影像不會上傳伺服器。
+      </p>
+    </div>
+
+  </aside>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.21.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── Chinese class labels (COCO 80) ──
+  const ZH = {
+    person:'人', bicycle:'腳踏車', car:'汽車', motorcycle:'機車',
+    airplane:'飛機', bus:'公車', train:'火車', truck:'卡車', boat:'船',
+    'traffic light':'紅綠燈', 'fire hydrant':'消防栓', 'stop sign':'停止標誌',
+    'parking meter':'停車計時器', bench:'長椅', bird:'鳥', cat:'貓', dog:'狗',
+    horse:'馬', sheep:'羊', cow:'牛', elephant:'大象', bear:'熊', zebra:'斑馬',
+    giraffe:'長頸鹿', backpack:'背包', umbrella:'雨傘', handbag:'手提包',
+    tie:'領帶', suitcase:'行李箱', frisbee:'飛盤', skis:'滑雪板',
+    snowboard:'雪板', 'sports ball':'球', kite:'風箏', 'baseball bat':'棒球棒',
+    'baseball glove':'棒球手套', skateboard:'滑板', surfboard:'衝浪板',
+    'tennis racket':'網球拍', bottle:'瓶子', 'wine glass':'酒杯', cup:'杯子',
+    fork:'叉子', knife:'刀子', spoon:'湯匙', bowl:'碗', banana:'香蕉',
+    apple:'蘋果', sandwich:'三明治', orange:'柳橙', broccoli:'花椰菜',
+    carrot:'紅蘿蔔', 'hot dog':'熱狗', pizza:'披薩', donut:'甜甜圈',
+    cake:'蛋糕', chair:'椅子', couch:'沙發', 'potted plant':'盆栽', bed:'床',
+    'dining table':'餐桌', toilet:'馬桶', tv:'電視', laptop:'筆電',
+    mouse:'滑鼠', remote:'遙控器', keyboard:'鍵盤', 'cell phone':'手機',
+    microwave:'微波爐', oven:'烤箱', toaster:'烤麵包機', sink:'水槽',
+    refrigerator:'冰箱', book:'書', clock:'時鐘', vase:'花瓶',
+    scissors:'剪刀', 'teddy bear':'玩具熊', 'hair drier':'吹風機',
+    toothbrush:'牙刷'
+  };
+
+  // ── Class colors (consistent per class) ──
+  const CLASS_COLORS = {};
+  const PALETTE = [
+    '#3b82f6','#06b6d4','#8b5cf6','#ec4899','#f59e0b',
+    '#22c55e','#ef4444','#f97316','#14b8a6','#a855f7'
+  ];
+  function colorFor(cls) {
+    if (!CLASS_COLORS[cls]) {
+      const keys = Object.keys(CLASS_COLORS);
+      CLASS_COLORS[cls] = PALETTE[keys.length % PALETTE.length];
+    }
+    return CLASS_COLORS[cls];
+  }
+
+  // ── DOM ──
+  const video     = document.getElementById('webcam');
+  const canvas    = document.getElementById('overlay');
+  const ctx       = canvas.getContext('2d');
+  const loading   = document.getElementById('loading-screen');
+  const badge     = document.getElementById('status-badge');
+  const btnCam    = document.getElementById('btn-camera');
+  const listEl    = document.getElementById('detect-list');
+  const statFps   = document.getElementById('stat-fps');
+  const statCount = document.getElementById('stat-count');
+  const slider    = document.getElementById('threshold');
+  const sliderVal = document.getElementById('threshold-val');
+
+  let model    = null;
+  let running  = false;
+  let lastTs   = 0;
+
+  // ── Load model ──
+  cocoSsd.load().then(function (m) {
+    model = m;
+    loading.style.display = 'none';
+    badge.textContent = '模型就緒';
+    badge.className = 'ready';
+    btnCam.disabled = false;
+  }).catch(function (err) {
+    loading.innerHTML = '<p style="color:#ef4444">模型載入失敗：' + err.message + '</p>';
+  });
+
+  // ── Threshold slider ──
+  slider.addEventListener('input', function () {
+    sliderVal.textContent = slider.value + '%';
+  });
+
+  // ── Camera button ──
+  btnCam.addEventListener('click', function () {
+    if (running) {
+      stopCamera();
+    } else {
+      startCamera();
+    }
+  });
+
+  function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(function (stream) {
+        video.srcObject = stream;
+        video.onloadedmetadata = function () {
+          canvas.width  = video.videoWidth;
+          canvas.height = video.videoHeight;
+          running = true;
+          btnCam.textContent = '關閉攝影機';
+          badge.textContent = '偵測中';
+          badge.className = 'ready';
+          requestAnimationFrame(detectLoop);
+        };
+      })
+      .catch(function (err) {
+        alert('無法存取攝影機：' + err.message);
+      });
+  }
+
+  function stopCamera() {
+    running = false;
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(function (t) { t.stop(); });
+      video.srcObject = null;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    btnCam.textContent = '開啟攝影機';
+    badge.textContent = '已暫停';
+    badge.className = '';
+    statFps.textContent = '—';
+    statCount.textContent = '0';
+    listEl.innerHTML = '<li style="color:var(--text-dim);font-size:.82rem">等待偵測…</li>';
+  }
+
+  // ── Detection loop ──
+  var detecting = false;
+
+  function detectLoop(ts) {
+    if (!running) return;
+    requestAnimationFrame(detectLoop);
+
+    if (detecting) return; // skip frame while previous inference is running
+    if (video.readyState < 2) return;
+
+    // FPS
+    if (lastTs) {
+      var fps = Math.round(1000 / (ts - lastTs));
+      statFps.textContent = fps;
+    }
+    lastTs = ts;
+
+    var threshold = parseInt(slider.value, 10) / 100;
+    detecting = true;
+
+    model.detect(video, undefined, threshold).then(function (preds) {
+      detecting = false;
+      drawResults(preds);
+      updateList(preds);
+    }).catch(function () {
+      detecting = false;
+    });
+  }
+
+  // ── Draw bounding boxes ──
+  function drawResults(preds) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    preds.forEach(function (p) {
+      var x = p.bbox[0], y = p.bbox[1], w = p.bbox[2], h = p.bbox[3];
+      var color = colorFor(p.class);
+      var label = (ZH[p.class] || p.class) + ' ' + Math.round(p.score * 100) + '%';
+      var fontSize = Math.max(14, Math.round(canvas.width / 40));
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(x, y, w, h);
+
+      ctx.font = 'bold ' + fontSize + 'px "Segoe UI", sans-serif';
+      var tw = ctx.measureText(label).width;
+      var th = fontSize + 8;
+      var ty = y > th ? y - 4 : y + h + th;
+
+      ctx.fillStyle = color;
+      ctx.fillRect(x - 1, ty - th + 4, tw + 10, th);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(label, x + 4, ty);
+    });
+  }
+
+  // ── Side panel list ──
+  function updateList(preds) {
+    statCount.textContent = preds.length;
+
+    if (preds.length === 0) {
+      listEl.innerHTML = '<li style="color:var(--text-dim);font-size:.82rem">畫面中沒有偵測到物件</li>';
+      return;
+    }
+
+    var sorted = preds.slice().sort(function (a, b) { return b.score - a.score; });
+    listEl.innerHTML = sorted.map(function (p) {
+      var pct = Math.round(p.score * 100);
+      var color = colorFor(p.class);
+      return '<li>' +
+        '<span class="det-name" style="color:' + color + '">' + (ZH[p.class] || p.class) + '</span>' +
+        '<div class="det-bar-wrap"><div class="det-bar" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<span class="det-score">' + pct + '%</span>' +
+        '</li>';
+    }).join('');
+  }
+
+})();
+</script>
+</body>
+</html>
