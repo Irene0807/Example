@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>互動模擬 | 賽局理論</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="../src/styles/main.css" />
+  <link rel="stylesheet" href="../src/styles/components.css" />
+  <link rel="stylesheet" href="../src/styles/animations.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">♟</span>
+      <span class="nav-title">賽局理論</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="concepts.html">核心概念</a></li>
+      <li><a href="games.html">經典賽局</a></li>
+      <li><a href="simulator.html" class="active">互動模擬</a></li>
+      <li><a href="news.html">即時新聞</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="選單">☰</button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="container fade-in">
+      <h1>互動模擬</h1>
+      <p>親身體驗賽局理論的策略邏輯</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="sim-section">
+      <h2>模擬一：囚徒困境</h2>
+      <p class="sim-desc">你是囚犯 A，面對是否要認罪的抉擇。選擇你的策略，看看結果如何。</p>
+      <div class="sim-container">
+        <div class="sim-panel">
+          <h3>情境說明</h3>
+          <p>你與共犯被分開審訊。若你認罪而對方沉默，你無罪釋放；反之則服刑 10 年。若雙方都認罪，各服刑 5 年；雙方都沉默，各服刑 1 年。</p>
+          <div class="sim-matrix">
+            <table id="pd-matrix">
+              <thead>
+                <tr><th scope="col"></th><th scope="col">對方：沉默</th><th scope="col">對方：認罪</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">你：沉默</th>
+                  <td id="cell-cc">你 -1 年，對方 -1 年</td>
+                  <td id="cell-cd">你 -10 年，對方 0 年</td>
+                </tr>
+                <tr>
+                  <th scope="row">你：認罪</th>
+                  <td id="cell-dc">你 0 年，對方 -10 年</td>
+                  <td id="cell-dd">你 -5 年，對方 -5 年</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sim-control">
+          <h3>做出選擇</h3>
+          <div class="choice-buttons">
+            <button class="choice-btn" id="btn-cooperate" onclick="pdChoose('cooperate')">
+              🤐 保持沉默（合作）
+            </button>
+            <button class="choice-btn danger" id="btn-defect" onclick="pdChoose('defect')">
+              📋 認罪（背叛）
+            </button>
+          </div>
+          <div class="sim-result" id="pd-result" hidden>
+            <h4>結果</h4>
+            <p id="pd-result-text"></p>
+            <div id="pd-result-detail"></div>
+            <button class="btn btn-secondary btn-sm" onclick="pdReset()">再試一次</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sim-section">
+      <h2>模擬二：重複囚徒困境</h2>
+      <p class="sim-desc">與電腦對戰 10 輪，體驗不同策略在重複賽局中的效果。</p>
+      <div class="sim-container">
+        <div class="sim-panel">
+          <h3>選擇電腦策略</h3>
+          <div class="strategy-selector">
+            <label class="strategy-option">
+              <input type="radio" name="ai-strategy" value="tit-for-tat" checked />
+              <div class="strategy-card">
+                <strong>以牙還牙（Tit-for-Tat）</strong>
+                <p>第一輪合作，之後複製對方上一輪的行動</p>
+              </div>
+            </label>
+            <label class="strategy-option">
+              <input type="radio" name="ai-strategy" value="always-defect" />
+              <div class="strategy-card">
+                <strong>永遠背叛</strong>
+                <p>每一輪都選擇背叛</p>
+              </div>
+            </label>
+            <label class="strategy-option">
+              <input type="radio" name="ai-strategy" value="always-cooperate" />
+              <div class="strategy-card">
+                <strong>永遠合作</strong>
+                <p>每一輪都選擇合作</p>
+              </div>
+            </label>
+            <label class="strategy-option">
+              <input type="radio" name="ai-strategy" value="random" />
+              <div class="strategy-card">
+                <strong>隨機策略</strong>
+                <p>50% 機率合作，50% 機率背叛</p>
+              </div>
+            </label>
+          </div>
+          <button class="btn btn-primary" onclick="startRepeatedPD()">開始遊戲</button>
+        </div>
+        <div class="sim-panel">
+          <h3>遊戲記錄</h3>
+          <div id="repeated-game-area" class="game-area">
+            <p class="game-area-placeholder">選擇電腦策略後開始遊戲</p>
+          </div>
+          <div id="repeated-score" class="score-display" hidden>
+            <span>你的得分：<strong id="player-score">0</strong></span>
+            <span>電腦得分：<strong id="ai-score">0</strong></span>
+            <span>輪次：<strong id="round-count">0</strong>/10</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sim-section">
+      <h2>模擬三：自訂報酬矩陣</h2>
+      <p class="sim-desc">輸入自訂的 2×2 賽局報酬矩陣，系統自動尋找納許均衡。</p>
+      <div class="sim-container">
+        <div class="sim-panel">
+          <h3>輸入報酬矩陣</h3>
+          <p class="hint">格式：(玩家A報酬, 玩家B報酬)</p>
+          <div class="custom-matrix-input">
+            <div class="matrix-labels">
+              <div></div>
+              <div>B: 策略 1</div>
+              <div>B: 策略 2</div>
+            </div>
+            <div class="matrix-row">
+              <div class="row-label">A: 策略 1</div>
+              <div class="cell-inputs">
+                <input type="number" id="a11" placeholder="A" value="3" />
+                <input type="number" id="b11" placeholder="B" value="3" />
+              </div>
+              <div class="cell-inputs">
+                <input type="number" id="a12" placeholder="A" value="-1" />
+                <input type="number" id="b12" placeholder="B" value="5" />
+              </div>
+            </div>
+            <div class="matrix-row">
+              <div class="row-label">A: 策略 2</div>
+              <div class="cell-inputs">
+                <input type="number" id="a21" placeholder="A" value="5" />
+                <input type="number" id="b21" placeholder="B" value="-1" />
+              </div>
+              <div class="cell-inputs">
+                <input type="number" id="a22" placeholder="A" value="0" />
+                <input type="number" id="b22" placeholder="B" value="0" />
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="findNashEquilibrium()">尋找納許均衡</button>
+        </div>
+        <div class="sim-panel">
+          <h3>分析結果</h3>
+          <div id="nash-result" class="analysis-result">
+            <p class="game-area-placeholder">輸入報酬矩陣後點擊分析</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2024 賽局理論教學網站 · <a href="concepts.html">← 回到核心概念</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../src/js/main.js"></script>
+  <script src="../src/js/simulator.js"></script>
+</body>
+</html>

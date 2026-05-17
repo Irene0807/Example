@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>核心概念 | 賽局理論</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="../src/styles/main.css" />
+  <link rel="stylesheet" href="../src/styles/components.css" />
+  <link rel="stylesheet" href="../src/styles/animations.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">♟</span>
+      <span class="nav-title">賽局理論</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="concepts.html" class="active">核心概念</a></li>
+      <li><a href="games.html">經典賽局</a></li>
+      <li><a href="simulator.html">互動模擬</a></li>
+      <li><a href="news.html">即時新聞</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="選單">☰</button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="container fade-in">
+      <h1>核心概念</h1>
+      <p>掌握賽局理論的基礎工具與思維框架</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <aside class="toc">
+        <h3>目錄</h3>
+        <ul>
+          <li><a href="#players">參與者與策略</a></li>
+          <li><a href="#nash">納許均衡</a></li>
+          <li><a href="#dominant">優勢策略</a></li>
+          <li><a href="#minimax">最小最大值</a></li>
+          <li><a href="#pareto">帕累托最優</a></li>
+          <li><a href="#zerosum">零和賽局</a></li>
+          <li><a href="#mixed">混合策略</a></li>
+        </ul>
+      </aside>
+
+      <div class="content-main">
+
+        <section id="players" class="concept-section slide-up">
+          <h2>參與者、策略與報酬</h2>
+          <p>賽局理論的三個基本要素：</p>
+          <div class="element-grid">
+            <div class="element-card">
+              <div class="element-icon">👥</div>
+              <h4>參與者（Players）</h4>
+              <p>賽局中做出決策的個體，可以是個人、公司、國家，甚至是基因。</p>
+            </div>
+            <div class="element-card">
+              <div class="element-icon">🎯</div>
+              <h4>策略（Strategies）</h4>
+              <p>每個參與者在不同情境下的完整行動計畫，包含純策略與混合策略。</p>
+            </div>
+            <div class="element-card">
+              <div class="element-icon">💰</div>
+              <h4>報酬（Payoffs）</h4>
+              <p>每種策略組合下，各參與者獲得的效用或收益值。</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="nash" class="concept-section slide-up">
+          <h2>納許均衡</h2>
+          <div class="concept-highlight">
+            <blockquote>
+              「在納許均衡中，給定其他人的策略，沒有任何玩家能夠透過單方面改變自己的策略來提高報酬。」
+              <cite>— John Nash, 1950</cite>
+            </blockquote>
+          </div>
+          <p>納許均衡是賽局理論最重要的解概念。一個策略組合 (s₁*, s₂*, ..., sₙ*) 是納許均衡，當且僅當對每個玩家 i：</p>
+          <div class="formula-box">
+            <p>u<sub>i</sub>(s<sub>i</sub>*, s<sub>-i</sub>*) ≥ u<sub>i</sub>(s<sub>i</sub>, s<sub>-i</sub>*) &nbsp; 對所有 s<sub>i</sub> ∈ S<sub>i</sub></p>
+          </div>
+          <div class="info-box info-note">
+            <strong>重要性質：</strong> 每個有限賽局至少存在一個納許均衡（可能是混合策略均衡）。
+          </div>
+        </section>
+
+        <section id="dominant" class="concept-section slide-up">
+          <h2>優勢策略</h2>
+          <p>若某策略無論對手如何行動，都能帶來比其他策略更高（或相等）的報酬，稱為<strong>優勢策略（Dominant Strategy）</strong>。</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">類型</th>
+                  <th scope="col">定義</th>
+                  <th scope="col">強度</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>嚴格優勢策略</td>
+                  <td>無論對手選什麼，此策略報酬<strong>嚴格大於</strong>其他策略</td>
+                  <td><span class="badge badge-strong">強</span></td>
+                </tr>
+                <tr>
+                  <td>弱優勢策略</td>
+                  <td>無論對手選什麼，此策略報酬<strong>大於等於</strong>其他策略</td>
+                  <td><span class="badge badge-weak">弱</span></td>
+                </tr>
+                <tr>
+                  <td>被優勢策略</td>
+                  <td>存在另一策略在所有情況下都更好，此策略永遠不應被選</td>
+                  <td><span class="badge badge-dominated">劣</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="minimax" class="concept-section slide-up">
+          <h2>最小最大值定理</h2>
+          <p>在二人零和賽局中，馮·諾伊曼的<strong>最小最大值定理（Minimax Theorem）</strong>保證：</p>
+          <div class="formula-box">
+            <p>max<sub>i</sub> min<sub>j</sub> u(i, j) = min<sub>j</sub> max<sub>i</sub> u(i, j) = v*</p>
+          </div>
+          <p>玩家 A 最大化其最小報酬，玩家 B 最小化玩家 A 的最大報酬，二者在混合策略下必然達到同一個均衡值 v*。</p>
+          <div class="info-box info-warning">
+            <strong>注意：</strong> 此定理只適用於零和賽局。非零和賽局需要使用納許均衡概念。
+          </div>
+        </section>
+
+        <section id="pareto" class="concept-section slide-up">
+          <h2>帕累托最優</h2>
+          <p>一個結果是<strong>帕累托最優（Pareto Optimal）</strong>，若不存在另一個結果能讓至少一個參與者更好，同時又不讓任何人更差。</p>
+          <div class="pareto-diagram">
+            <div class="pareto-point optimal">帕累托最優 ✓<br />(3,3)</div>
+            <div class="pareto-point suboptimal">非帕累托最優 ✗<br />(0,0)</div>
+            <p class="pareto-note">囚徒困境中，納許均衡 (0,0) 並非帕累托最優，這正是「社會困境」的核心矛盾。</p>
+          </div>
+        </section>
+
+        <section id="zerosum" class="concept-section slide-up">
+          <h2>零和賽局</h2>
+          <p>在<strong>零和賽局（Zero-Sum Game）</strong>中，所有參與者的報酬總和永遠為零：一人的收益必為他人的損失。</p>
+          <div class="example-grid">
+            <div class="example-card">
+              <h4>零和賽局例子</h4>
+              <ul>
+                <li>西洋棋、圍棋</li>
+                <li>撲克牌競技</li>
+                <li>期貨市場（短期）</li>
+                <li>軍事對峙</li>
+              </ul>
+            </div>
+            <div class="example-card">
+              <h4>非零和賽局例子</h4>
+              <ul>
+                <li>貿易談判</li>
+                <li>公共財賽局</li>
+                <li>囚徒困境</li>
+                <li>協調賽局</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="mixed" class="concept-section slide-up">
+          <h2>混合策略</h2>
+          <p><strong>混合策略（Mixed Strategy）</strong>是指玩家依照某個機率分布隨機選擇純策略。</p>
+          <div class="formula-box">
+            <p>σ<sub>i</sub> = (p₁, p₂, ..., pₖ) &nbsp; 其中 Σpⱼ = 1, pⱼ ≥ 0</p>
+          </div>
+          <div class="info-box info-note">
+            <strong>為何使用混合策略？</strong> 有些賽局沒有純策略納許均衡（如猜拳），但透過混合策略，每個有限賽局都保證存在至少一個均衡。
+          </div>
+          <div class="rps-example">
+            <h4>猜拳的均衡混合策略</h4>
+            <p>每種手勢各以 1/3 的機率出現 → 對手無法藉由偏離來提高勝率</p>
+            <div class="rps-grid">
+              <span class="rps-item">✊ 1/3</span>
+              <span class="rps-item">✋ 1/3</span>
+              <span class="rps-item">✌️ 1/3</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2024 賽局理論教學網站 · <a href="games.html">下一頁：經典賽局 →</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../src/js/main.js"></script>
+</body>
+</html>

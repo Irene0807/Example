@@ -1,0 +1,19 @@
+{
+  "name": "game-theory-website",
+  "version": "1.0.0",
+  "description": "賽局理論教學網站 — 涵蓋核心概念、經典賽局與互動模擬",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve public -p 3000",
+    "start": "npx serve public -p 8080",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "lint": "npx eslint src/js/**/*.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "serve": "^14.0.0"
+  },
+  "keywords": ["game-theory", "nash-equilibrium", "economics", "interactive", "教育"],
+  "license": "MIT"
+}

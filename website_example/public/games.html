@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>經典賽局 | 賽局理論</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="../src/styles/main.css" />
+  <link rel="stylesheet" href="../src/styles/components.css" />
+  <link rel="stylesheet" href="../src/styles/animations.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">♟</span>
+      <span class="nav-title">賽局理論</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="concepts.html">核心概念</a></li>
+      <li><a href="games.html" class="active">經典賽局</a></li>
+      <li><a href="simulator.html">互動模擬</a></li>
+      <li><a href="news.html">即時新聞</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="選單">☰</button>
+  </nav>
+
+  <header class="page-hero">
+    <div class="container fade-in">
+      <h1>經典賽局</h1>
+      <p>理解人類決策與社會現象的六個經典模型</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="cooperative">合作賽局</button>
+      <button class="filter-btn" data-filter="competitive">競爭賽局</button>
+      <button class="filter-btn" data-filter="coordination">協調賽局</button>
+    </div>
+
+    <div class="games-grid" id="games-grid">
+
+      <article class="game-card" data-category="cooperative">
+        <div class="game-card-header prisoner">
+          <span class="game-icon">🔒</span>
+          <h2>囚徒困境</h2>
+          <span class="game-tag">最著名賽局</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">兩名嫌疑犯被分開偵訊，各自必須在不知道對方選擇的情況下決定是否認罪。</p>
+          <div class="game-matrix">
+            <table>
+              <thead>
+                <tr><th scope="col"></th><th scope="col">合作（沉默）</th><th scope="col">背叛（認罪）</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">合作（沉默）</th><td class="cell-good">(-1, -1)</td><td class="cell-bad">(-10, 0)</td></tr>
+                <tr><th scope="row">背叛（認罪）</th><td class="cell-bad">(0, -10)</td><td class="cell-nash">(-5, -5) ★</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="game-analysis">
+            <p><strong>納許均衡：</strong> (背叛, 背叛) → 都服刑 5 年</p>
+            <p><strong>帕累托最優：</strong> (合作, 合作) → 都只服刑 1 年</p>
+            <p><strong>核心矛盾：</strong> 個人理性導致集體非理性</p>
+          </div>
+          <div class="game-applications">
+            <h4>現實應用</h4>
+            <ul>
+              <li>軍備競賽</li>
+              <li>企業價格競爭</li>
+              <li>環境污染問題</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="coordination">
+        <div class="game-card-header stag">
+          <span class="game-icon">🦌</span>
+          <h2>獵鹿賽局</h2>
+          <span class="game-tag">協調困境</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">兩名獵人可以合作獵大鹿（高報酬但需雙方配合），或各自獵兔子（低報酬但穩定）。</p>
+          <div class="game-matrix">
+            <table>
+              <thead>
+                <tr><th scope="col"></th><th scope="col">獵鹿</th><th scope="col">獵兔</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">獵鹿</th><td class="cell-great">(4, 4) ★</td><td class="cell-bad">(0, 2)</td></tr>
+                <tr><th scope="row">獵兔</th><td class="cell-bad">(2, 0)</td><td class="cell-nash">(2, 2) ★</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="game-analysis">
+            <p><strong>納許均衡：</strong> 兩個均衡：(獵鹿, 獵鹿) 和 (獵兔, 獵兔)</p>
+            <p><strong>協調問題：</strong> 雙方需建立互信才能達到最優均衡</p>
+          </div>
+          <div class="game-applications">
+            <h4>現實應用</h4>
+            <ul>
+              <li>國際合作協議</li>
+              <li>企業聯盟形成</li>
+              <li>社會規範建立</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="coordination">
+        <div class="game-card-header chicken">
+          <span class="game-icon">🚗</span>
+          <h2>膽小鬼賽局</h2>
+          <span class="game-tag">衝突與威脅</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">兩輛車對向行駛，各自決定是否閃避。都不閃避將發生碰撞；先閃避的人被視為「膽小鬼」。</p>
+          <div class="game-matrix">
+            <table>
+              <thead>
+                <tr><th scope="col"></th><th scope="col">直行</th><th scope="col">閃避</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">直行</th><td class="cell-worst">(-100, -100)</td><td class="cell-good">(10, -5) ★</td></tr>
+                <tr><th scope="row">閃避</th><td class="cell-good">(-5, 10) ★</td><td class="cell-ok">(0, 0)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="game-analysis">
+            <p><strong>納許均衡：</strong> (直行, 閃避) 和 (閃避, 直行)</p>
+            <p><strong>混合策略均衡：</strong> 亦存在混合策略納許均衡</p>
+          </div>
+          <div class="game-applications">
+            <h4>現實應用</h4>
+            <ul>
+              <li>核武對峙（古巴飛彈危機）</li>
+              <li>勞資談判</li>
+              <li>公司競爭入市</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="competitive">
+        <div class="game-card-header auction">
+          <span class="game-icon">🔨</span>
+          <h2>拍賣賽局</h2>
+          <span class="game-tag">資訊不對稱</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">多名競標者對物品各有私有估值，必須決定出價策略以在競爭中獲勝且不過度付費。</p>
+          <div class="auction-types">
+            <div class="auction-type">
+              <h4>英式拍賣</h4>
+              <p>公開遞增競標，最高價得標，出最高真實估值 = 最優策略</p>
+            </div>
+            <div class="auction-type">
+              <h4>荷式拍賣</h4>
+              <p>價格遞減，第一個接受者得標，需計算何時喊停</p>
+            </div>
+            <div class="auction-type">
+              <h4>維克里拍賣</h4>
+              <p>密封投標，第二高價得標，說真話（出真實估值）是優勢策略</p>
+            </div>
+          </div>
+          <div class="game-applications">
+            <h4>現實應用</h4>
+            <ul>
+              <li>Google AdWords 廣告競標</li>
+              <li>頻譜拍賣（政府授權）</li>
+              <li>eBay 線上拍賣</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="competitive">
+        <div class="game-card-header cournot">
+          <span class="game-icon">🏭</span>
+          <h2>古諾競爭模型</h2>
+          <span class="game-tag">寡佔市場</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">兩家廠商同時決定產量，市場價格由總產量決定。各廠商在不知道對手產量的情況下最大化利潤。</p>
+          <div class="formula-box">
+            <p>最優反應函數：q₁* = (a - c - q₂) / 2</p>
+            <p>古諾均衡：q₁* = q₂* = (a - c) / 3</p>
+          </div>
+          <div class="game-analysis">
+            <p><strong>市場結果：</strong> 介於壟斷（產量最低）與完全競爭（產量最高）之間</p>
+            <p><strong>擴展：</strong> n 家廠商時，廠商數越多越接近完全競爭</p>
+          </div>
+          <div class="game-applications">
+            <h4>現實應用</h4>
+            <ul>
+              <li>石油輸出國組織（OPEC）</li>
+              <li>電信市場競爭</li>
+              <li>航空公司定座位</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="cooperative">
+        <div class="game-card-header ultimatum">
+          <span class="game-icon">🤝</span>
+          <h2>最後通牒賽局</h2>
+          <span class="game-tag">公平性行為</span>
+        </div>
+        <div class="game-card-body">
+          <p class="game-desc">提案者決定如何分配一筆錢，回應者決定是否接受。若拒絕，雙方均得零。理性預測 vs 實際行為大相逕庭。</p>
+          <div class="ultimatum-example">
+            <div class="ultimatum-step">
+              <span class="step-num">1</span>
+              <p>提案者分配 100 元：提案 (70:30)</p>
+            </div>
+            <div class="ultimatum-step">
+              <span class="step-num">2</span>
+              <p>回應者接受 → 各得 70、30 元</p>
+            </div>
+            <div class="ultimatum-step alt">
+              <span class="step-num">✗</span>
+              <p>回應者拒絕 → 雙方各得 0 元</p>
+            </div>
+          </div>
+          <div class="info-box info-note">
+            <strong>理性預測：</strong> 提案者應出 1 元，回應者應接受（1 > 0）<br />
+            <strong>實驗結果：</strong> 低於 30% 的提案通常被拒絕——人類重視公平！
+          </div>
+          <div class="game-applications">
+            <h4>現實意義</h4>
+            <ul>
+              <li>行為經濟學基礎</li>
+              <li>薪資談判心理</li>
+              <li>跨文化公平感差異研究</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2024 賽局理論教學網站 · <a href="simulator.html">下一頁：互動模擬 →</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../src/js/main.js"></script>
+  <script src="../src/js/games.js"></script>
+</body>
+</html>

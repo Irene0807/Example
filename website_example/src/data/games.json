@@ -1,0 +1,67 @@
+{
+  "games": [
+    {
+      "id": "prisoners-dilemma",
+      "name": "囚徒困境",
+      "category": "cooperative",
+      "icon": "🔒",
+      "tag": "最著名賽局",
+      "description": "兩名嫌疑犯被分開偵訊，各自在不知道對方選擇的情況下決定是否認罪。",
+      "players": 2,
+      "strategies": {
+        "A": ["合作（沉默）", "背叛（認罪）"],
+        "B": ["合作（沉默）", "背叛（認罪）"]
+      },
+      "payoffMatrix": [
+        [[-1, -1], [-10, 0]],
+        [[0, -10], [-5, -5]]
+      ],
+      "nashEquilibria": [[1, 1]],
+      "paretoOptimal": [[0, 0]],
+      "keyInsight": "個人理性導致集體非理性——納許均衡並非帕累托最優。",
+      "realWorldApplications": ["軍備競賽", "企業價格競爭", "環境污染問題", "社群媒體注意力爭奪"]
+    },
+    {
+      "id": "stag-hunt",
+      "name": "獵鹿賽局",
+      "category": "coordination",
+      "icon": "🦌",
+      "tag": "協調困境",
+      "description": "兩名獵人可以合作獵大鹿（高報酬但需配合），或各自獵兔子（低報酬但穩定）。",
+      "players": 2,
+      "strategies": {
+        "A": ["獵鹿", "獵兔"],
+        "B": ["獵鹿", "獵兔"]
+      },
+      "payoffMatrix": [
+        [[4, 4], [0, 2]],
+        [[2, 0], [2, 2]]
+      ],
+      "nashEquilibria": [[0, 0], [1, 1]],
+      "paretoOptimal": [[0, 0]],
+      "keyInsight": "存在兩個納許均衡，協調問題決定哪個均衡會實現。",
+      "realWorldApplications": ["國際合作協議", "企業聯盟形成", "社會規範建立", "開放原始碼合作"]
+    },
+    {
+      "id": "chicken",
+      "name": "膽小鬼賽局",
+      "category": "coordination",
+      "icon": "🚗",
+      "tag": "衝突與威脅",
+      "description": "兩輛車對向行駛，各自決定是否閃避。都不閃避將發生碰撞，先閃避的人被視為膽小鬼。",
+      "players": 2,
+      "strategies": {
+        "A": ["直行", "閃避"],
+        "B": ["直行", "閃避"]
+      },
+      "payoffMatrix": [
+        [[-100, -100], [10, -5]],
+        [[-5, 10], [0, 0]]
+      ],
+      "nashEquilibria": [[0, 1], [1, 0]],
+      "paretoOptimal": [[0, 1], [1, 0], [1, 1]],
+      "keyInsight": "承諾機制（如方向盤外拋）可以改變賽局結果，這是核武嚇阻戰略的理論基礎。",
+      "realWorldApplications": ["核武對峙", "勞資談判", "公司競爭入市", "外交邊緣政策"]
+    }
+  ]
+}

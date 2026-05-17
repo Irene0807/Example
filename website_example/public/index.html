@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>賽局理論 | Game Theory</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="../src/styles/main.css" />
+  <link rel="stylesheet" href="../src/styles/components.css" />
+  <link rel="stylesheet" href="../src/styles/animations.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">♟</span>
+      <span class="nav-title">賽局理論</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">首頁</a></li>
+      <li><a href="concepts.html">核心概念</a></li>
+      <li><a href="games.html">經典賽局</a></li>
+      <li><a href="simulator.html">互動模擬</a></li>
+      <li><a href="news.html">即時新聞</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="選單">☰</button>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content fade-in">
+      <h1 class="hero-title">賽局理論</h1>
+      <p class="hero-subtitle">Game Theory</p>
+      <p class="hero-description">
+        研究理性決策者之間策略互動的數學框架——<br />
+        從經濟學到政治、從生物演化到人工智慧，無所不在。
+      </p>
+      <div class="hero-actions">
+        <a href="concepts.html" class="btn btn-primary">開始學習</a>
+        <a href="simulator.html" class="btn btn-secondary">互動模擬</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="payoff-matrix-demo">
+        <div class="matrix-label top">玩家 B</div>
+        <div class="matrix-label left">玩家 A</div>
+        <table class="matrix-table">
+          <thead>
+            <tr><th scope="col"></th><th scope="col">合作</th><th scope="col">背叛</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">合作</th><td class="highlight">(3, 3)</td><td>(-1, 5)</td></tr>
+            <tr><th scope="row">背叛</th><td>(5, -1)</td><td class="dilemma">(0, 0)</td></tr>
+          </tbody>
+        </table>
+        <p class="matrix-caption">囚徒困境報酬矩陣</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section intro-cards">
+      <div class="container">
+        <h2 class="section-title">什麼是賽局理論？</h2>
+        <p class="section-subtitle">由數學家馮·諾伊曼（von Neumann）與經濟學家摩根斯坦（Morgenstern）於 1944 年奠定基礎</p>
+        <div class="card-grid">
+          <div class="card slide-up">
+            <div class="card-icon">🧮</div>
+            <h3>數學框架</h3>
+            <p>用嚴謹的數學語言描述多方決策情境，分析每個參與者的最佳策略選擇。</p>
+          </div>
+          <div class="card slide-up delay-1">
+            <div class="card-icon">⚖️</div>
+            <h3>均衡分析</h3>
+            <p>納許均衡（Nash Equilibrium）是賽局理論的核心概念，描述沒有人願意單方面改變策略的穩定狀態。</p>
+          </div>
+          <div class="card slide-up delay-2">
+            <div class="card-icon">🌍</div>
+            <h3>廣泛應用</h3>
+            <p>應用於經濟學、政治學、生物學、電腦科學、外交談判等各個領域。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section timeline-section">
+      <div class="container">
+        <h2 class="section-title">發展歷史</h2>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <section class="section nobel-section">
+      <div class="container">
+        <h2 class="section-title">諾貝爾獎得主</h2>
+        <p class="section-subtitle">賽局理論學者多次榮獲諾貝爾經濟學獎</p>
+        <div class="nobel-grid" id="nobel-grid"></div>
+      </div>
+    </section>
+
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>準備好探索賽局的世界了嗎？</h2>
+          <p>從囚徒困境到拍賣理論，每一個決策背後都有深刻的策略邏輯。</p>
+          <a href="games.html" class="btn btn-primary btn-large">探索經典賽局 →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="nav-logo">♟</span>
+          <span>賽局理論</span>
+          <p>一個關於策略與決策的數學世界</p>
+        </div>
+        <div class="footer-links">
+          <h4>頁面</h4>
+          <ul>
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="concepts.html">核心概念</a></li>
+            <li><a href="games.html">經典賽局</a></li>
+            <li><a href="simulator.html">互動模擬</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>概念</h4>
+          <ul>
+            <li><a href="concepts.html#nash">納許均衡</a></li>
+            <li><a href="concepts.html#dominant">優勢策略</a></li>
+            <li><a href="concepts.html#minimax">最小最大值</a></li>
+            <li><a href="concepts.html#pareto">帕累托最優</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 賽局理論教學網站 · 以教育為目的</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../src/js/main.js"></script>
+</body>
+</html>
