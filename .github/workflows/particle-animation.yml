@@ -20,10 +20,10 @@ jobs:
 
       - name: 執行腳本
         run: python script.py
-        working-directory: 4_script_example/改成腳本_3定時GithubAction
+        working-directory: 4_script_example/script_2_github_action
 
       - name: 上傳動畫產出
         uses: actions/upload-artifact@v4
         with:
           name: particle-animation
-          path: 4_script_example/改成腳本_3定時GithubAction/particle_animation.gif
+          path: 4_script_example/script_2_github_action/particle_animation.gif

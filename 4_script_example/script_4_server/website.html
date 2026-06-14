@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>呼叫 API 範例</title>
+</head>
+<body>
+  <h1>粒子模擬動畫</h1>
+  <button id="btn-anim">產生動畫（約30秒）</button>
+  <p id="anim-status"></p>
+  <img id="anim" alt="粒子模擬動畫" width="500">
+
+  <script>
+    // 部署到 Render 後，把這裡換成 Render 給的網址，例如：
+    // const API_URL = "https://your-app.onrender.com";
+    const API_URL = "http://127.0.0.1:5000";
+
+    document.getElementById("btn-anim").addEventListener("click", async () => {
+      document.getElementById("anim-status").textContent = "產生中，請稍候...";
+      const res = await fetch(`${API_URL}/animation`);
+      const blob = await res.blob();
+      document.getElementById("anim").src = URL.createObjectURL(blob);
+      document.getElementById("anim-status").textContent = "完成！";
+    });
+  </script>
+</body>
+</html>
