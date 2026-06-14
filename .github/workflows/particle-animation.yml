@@ -2,7 +2,7 @@ name: 定時產生粒子模擬動畫
 
 on:
   schedule:
-    - cron: "*/2 * * * *" # 每 2 分鐘執行一次
+    - cron: "*/15 * * * *" # 每 15 分鐘執行一次
   workflow_dispatch: # 允許手動觸發測試
 
 jobs:
