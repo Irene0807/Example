@@ -1,6 +1,7 @@
 import os
 import glob
 import requests # requests 抓取網路資料 (爬蟲)
+from datetime import datetime, timezone, timedelta # 取得更新時間
 import numpy as np # numpy 高效能多微陣列運算
 import pandas as pd # pandas 讀取、操作表格資料 (python的excel)
 import matplotlib.pyplot as plt # matplotlib 畫圖
@@ -22,6 +23,9 @@ elif temperature >= 20:
 else:
     particle_color = "blue"
 
+# 取得更新時間（台北時間 UTC+8）
+update_time = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M")
+
 # ---------------------------------------------------------
 
 # 1. 找出 output 資料夾中所有 frame_xxx.csv 檔案，依檔名排序
@@ -35,6 +39,10 @@ ax.set_ylim(0, 100) # 設定y軸從0-100
 ax.set_xlabel("X (km)") # x坐標軸名稱
 ax.set_ylabel("Y (km)") # y坐標軸名稱
 ax.set_title("Urban Air Pollution Particle Transport") # 標題名稱
+
+# 顯示更新時間
+ax.text(0.99, 0.01, f"Updated: {update_time} (UTC+8)", transform=ax.transAxes,
+        ha="right", va="bottom", fontsize=9, color="gray")
 
 # 3. 畫圖：建築物
 buildings = [
