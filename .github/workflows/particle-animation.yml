@@ -1,0 +1,29 @@
+name: 定時產生粒子模擬動畫
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 每天 UTC 00:00（台北時間 08:00）
+  workflow_dispatch: # 允許手動觸發測試
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝套件
+        run: pip install numpy pandas matplotlib requests pillow
+
+      - name: 執行腳本
+        run: python script.py
+        working-directory: 4_script_example/改成腳本_3定時GithubAction
+
+      - name: 上傳動畫產出
+        uses: actions/upload-artifact@v4
+        with:
+          name: particle-animation
+          path: 4_script_example/改成腳本_3定時GithubAction/particle_animation.gif
